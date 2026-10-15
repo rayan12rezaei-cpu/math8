@@ -1,4 +1,3 @@
-
 name: Build Madar Riazi APK
 
 on:
@@ -28,23 +27,37 @@ jobs:
 
       - name: Setup Android SDK
         uses: android-actions/setup-android@v3
+        with:
+          packages: "platform-tools"
 
       - name: Install Android SDK packages
         run: |
-          sdkmanager "platform-tools" \
-            "platforms;android-36" \
+          sdkmanager "platforms;android-36" \
             "build-tools;36.0.0"
 
       - name: Install Cordova
         run: npm install --global cordova
 
+      - name: Check input files
+        run: |
+          test -f index.html || {
+            echo "ERROR: index.html not found in repository root"
+            exit 1
+          }
+          test -f config.xml || {
+            echo "ERROR: config.xml not found in repository root"
+            exit 1
+          }
+
       - name: Create Cordova project
         run: |
-          mkdir -p /tmp/madar/www
+          cordova create /tmp/madar com.rayan.mr8 "مدار ریاضی"
           cp index.html /tmp/madar/www/index.html
           cp config.xml /tmp/madar/config.xml
-          cd /tmp/madar
-          cordova platform add android@15
+
+      - name: Add Android platform
+        working-directory: /tmp/madar
+        run: cordova platform add android@15
 
       - name: Build Debug APK
         working-directory: /tmp/madar
