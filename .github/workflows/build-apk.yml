@@ -1,0 +1,59 @@
+
+name: Build Madar Riazi APK
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+
+      - name: Setup Android SDK
+        uses: android-actions/setup-android@v3
+
+      - name: Install Android SDK packages
+        run: |
+          sdkmanager "platform-tools" \
+            "platforms;android-36" \
+            "build-tools;36.0.0"
+
+      - name: Install Cordova
+        run: npm install --global cordova
+
+      - name: Create Cordova project
+        run: |
+          mkdir -p /tmp/madar/www
+          cp index.html /tmp/madar/www/index.html
+          cp config.xml /tmp/madar/config.xml
+          cd /tmp/madar
+          cordova platform add android@15
+
+      - name: Build Debug APK
+        working-directory: /tmp/madar
+        run: cordova build android --debug
+
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: madar-riazi-debug-apk
+          path: /tmp/madar/platforms/android/app/build/outputs/apk/debug/*.apk
+          if-no-files-found: error
+          retention-days: 7
