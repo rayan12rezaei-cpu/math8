@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<widget xmlns="http://www.w3.org/ns/widgets"
+        xmlns:cdv="http://cordova.apache.org/ns/1.0"
+        id="com.rayan.mr8"
+        version="1.0.0">
+
+    <name>مدار ریاضی</name>
+    <description>اپلیکیشن مدار ریاضی</description>
+    <content src="index.html" />
+
+    <access origin="https://*"/>
+    <access origin="http://*"/>
+
+    <preference name="Orientation" value="portrait" />
+    <preference name="Fullscreen" value="false" />
+    <preference name="DisallowOverscroll" value="true" />
+
+    <allow-intent href="https://*"/>
+    <allow-intent href="http://*"/>
+</widget>
